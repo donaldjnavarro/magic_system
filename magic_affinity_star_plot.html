@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Magic Affinity Skill Sheet</title>
+    <!-- Load the Plotly.js library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+            background-color: black;
+        }
+        form {
+            display: float;
+            flex-direction: column;
+            width: 250px;
+            padding: 20px;
+        }
+        label, input {
+            margin-bottom: 10px;
+        }
+        .chart-column {
+                float: left;
+                width: 60%;
+                padding: 10px;
+                /* height: 300px; */
+        }
+        .container {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <form id="inputForm">
+        <h1>Magic Affinity Skill Sheet</h1>
+        <!-- Input fields for each affinity value -->
+
+        <!-- Dropdown -->
+        <h2>Environment Magic</h2>
+        <label for="environment_specialization">Specialization:</label>
+        <select id="environment_specialization" onchange="createChart()">
+            <option value="Environment" selected>No specialization selected</option>
+            <option value="Sanctuary">Sanctuary</option>
+            <option value="Nature">Nature</option>
+            <option value="Travel">Travel</option>
+        </select><br>
+        <!-- Number input -->
+        <label for="environment_input">Level:</label>
+        <input type="number" id="environment_input" min="0" max="10" onchange="createChart()"><br>
+
+        <!-- Dropdown -->
+        <h2>Health Magic</h2>
+        <label for="health_specialization">Specialization:</label>
+        <select id="health_specialization" onchange="createChart()">
+            <option value="Health" selected>No specialization selected</option>
+            <option value="Food">Food</option>
+            <option value="Rest">Rest</option>
+            <option value="Exercise">Exercise</option>
+        </select><br>
+        <!-- Number input -->
+        <label for="health_input">Level:</label>
+        <input type="number" id="health_input" min="0" max="10" onchange="createChart()"><br>
+
+        <!-- Dropdown -->
+        <h2>Relationship Magic</h2>
+        <label for="relationship_specialization">Specialization:</label>
+        <select id="relationship_specialization" onchange="createChart()">
+            <option value="Relationship" selected>No specialization selected</option>
+            <option value="Empathy">Empathy</option>
+            <option value="Communication">Communication</option>
+            <option value="Conflict">Conflict</option>
+        </select><br>
+        <!-- Number input -->
+        <label for="relationship_input">Level:</label>
+        <input type="number" id="relationship_input" min="0" max="10" onchange="createChart()"><br>
+        
+        <!-- Dropdown -->
+        <h2>Prosperity Magic</h2>
+        <label for="prosperity_specialization">Specialization:</label>
+        <select id="prosperity_specialization" onchange="createChart()">
+            <option value="Prosperity" selected>No specialization selected</option>
+            <option value="Fortune">Fortune</option>
+            <option value="Labor">Labor</option>
+            <option value="Trade">Trade</option>
+        </select><br>
+        <!-- Number input -->
+        <label for="prosperity_input">Level:</label>
+        <input type="number" id="prosperity_input" min="0" max="10" onchange="createChart()"><br>
+
+        <!-- Dropdown -->
+        <h2>Knowledge Magic</h2>
+        <label for="knowledge_specialization">Specialization:</label>
+        <select id="knowledge_specialization" onchange="createChart()">
+            <option value="Knowledge" selected>No specialization selected</option>
+            <option value="Investigation">Investigation</option>
+            <option value="Discovery">Discovery</option>
+            <option value="Foresight">Foresight</option>
+        </select><br>
+        <!-- Number input -->
+        <label for="knowledge_input">Level:</label>
+        <input type="number" id="knowledge_input" min="0" max="10" onchange="createChart()"><br>
+
+        <!-- Dropdown -->
+        <h2>Creativity Magic</h2>
+        <label for="creativity_specialization">Specialization:</label>
+        <select id="creativity_specialization" onchange="createChart()">
+            <option value="Creativity" selected>No specialization selected</option>
+            <option value="Artistry">Artistry</option>
+            <option value="Invention">Invention</option>
+            <option value="Imagination">Imagination</option>
+        </select><br>
+        <!-- Number input -->
+        <label for="creativity_input">Level:</label>
+        <input type="number" id="creativity_input" min="0" max="10" onchange="createChart()"><br>
+
+    </form>
+    <div class="chart-column">
+        <div id="chart"></div>
+        <div id="barChart"></div>
+    </div>
+    <script>
+        function createChart () {
+            /** Create a star chart */
+            let magic = {};
+            magic[document.getElementById('environment_specialization').value] = document.getElementById('environment_input').value | 0;
+            magic[document.getElementById('health_specialization').value] = document.getElementById('health_input').value | 0;
+            magic[document.getElementById('relationship_specialization').value] = document.getElementById('relationship_input').value | 0;
+            magic[document.getElementById('prosperity_specialization').value] = document.getElementById('prosperity_input').value | 0;
+            magic[document.getElementById('knowledge_specialization').value] = document.getElementById('knowledge_input').value | 0;
+            magic[document.getElementById('creativity_specialization').value] = document.getElementById('creativity_input').value | 0;
+            // Create a chart using Plotly.js library
+            // NOTE: We repeat the first point at the end to create a closing line
+            var data = [
+                {
+                    // x: [...Object.keys(magic), Object.keys(magic)[0]],
+                    // y: [...Object.values(magic), Object.values(magic)[0]],
+                    theta: [...Object.keys(magic), Object.keys(magic)[0]],
+                    r: [...Object.values(magic), Object.values(magic)[0]],
+                    type: "scatterpolar",
+                    fill: 'toself',
+                },
+            ];
+            
+            const layout = {
+                polar: {
+                    radialaxis: {
+                    visible: true, // Displays grid lines
+                    range: [0, 10]
+                    }
+                }
+            };
+            
+            Plotly.newPlot("chart", data, layout);
+
+            const barData = [];
+            /** Create a bar chart */
+            Object.keys(magic).forEach(m => {
+                barData.push({
+                    name: m,
+                    y: ['Magic'],
+                    x: [magic[m]],
+                    text: [`${m}: ${magic[m]}`],
+                    textposition: 'inside',
+                    type: 'bar',
+                    orientation: 'h'
+                });
+            })
+            
+            const barLayout = {
+                barmode: 'stack'
+            };
+            Plotly.newPlot("barChart", barData, barLayout);
+        }
+        createChart();
+    </script>
+</body>
+</html>
